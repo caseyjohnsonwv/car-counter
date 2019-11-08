@@ -51,7 +51,7 @@ def upload_data():
 
     global totalCars, lastUpdate
     totalCars = car_count
-    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d", time.gmttime())
+    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d")
 
     return "Success"
 
