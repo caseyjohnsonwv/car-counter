@@ -11,7 +11,7 @@ lastUpdate = None
 #main page with statistics
 def hello():
     app.config.update(SECRET_KEY = os.urandom(24))
-    return "Total Cars = {}<br/>Last Update: {}".format(totalCars,lastUpdate)
+    return "Total Cars = {}<br/>Last Update (GMT): {}".format(totalCars,lastUpdate)
 
 
 @app.route("/alive", methods=["GET"])
@@ -51,7 +51,7 @@ def upload_data():
 
     global totalCars, lastUpdate
     totalCars = car_count
-    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d")
+    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
 
     return "Success"
 
