@@ -11,7 +11,7 @@ lastUpdate = None
 #main page with statistics
 def hello():
     app.config.update(SECRET_KEY = os.urandom(24))
-    return "Total Cars = {}<br/>Last Update (GMT): {}".format(totalCars,lastUpdate)
+    return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
 
 
 @app.route("/alive", methods=["GET"])
@@ -46,7 +46,7 @@ def upload_data():
         return "ERROR: Data mismatch."
 
     try:
-        car_count = request.form['car_count']
+        car_count = int(request.form['car_count'])
     except Exception:
         return "ERROR: Data not found."
 
