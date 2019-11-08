@@ -1,8 +1,10 @@
-import os
+import os, time
 from flask import Flask, redirect, session, request, render_template
 
 
 app = Flask(__name__)
+totalCars = 0
+lastUpdate = None
 
 
 @app.route("/", methods=["GET"])
@@ -18,10 +20,40 @@ def alive():
     return "Success"
 
 
+@app.route("/reset", methods=["GET"])
+#simple get request to reset car counter
+def reset():
+    global totalCars
+    totalCars = 0
+    return redirect("/")
+
+
 @app.route("/upload-data", methods=["POST"])
 #route for HTTP POST request
 def upload_data():
-    return "Success"
+    try:
+        request_key = request.form['upload_key']
+    except Exception:
+        return "ERROR: Request rejected."
+
+    try:
+        upload_key = os.environ['upload_key']
+    except Exception:
+        return "ERROR: Upload rejected."
+
+    if upload_key != request_key:
+        return "ERROR: Data mismatch."
+
+    try:
+        car_count = request.form['car_count']
+    except Exception:
+        return "ERROR: Data not found."
+
+    global totalCars, lastUpdate
+    totalCars = car_count
+    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d", time.gmttime())
+
+    return "Total Cars = {}<br/>Last Update: {}".format(totalCars,lastUpdate)
 
 
 if __name__ == "__main__":
