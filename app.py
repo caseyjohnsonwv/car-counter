@@ -23,8 +23,9 @@ def alive():
 @app.route("/reset", methods=["GET"])
 #simple get request to reset car counter
 def reset():
-    global totalCars
+    global totalCars,lastUpdate
     totalCars = 0
+    lastUpdate = None
     return redirect("/")
 
 
