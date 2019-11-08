@@ -36,6 +36,7 @@ void loop() {
       /*
        * Send an HTTP POST request to a Flask app on Heroku!
        */
+       counter = 0;
     }
     delay(1000);
   }

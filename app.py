@@ -51,7 +51,7 @@ def upload_data():
         return "ERROR: Data not found."
 
     global totalCars, lastUpdate
-    totalCars = car_count
+    totalCars += car_count
     lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
 
     return "Success"
