@@ -11,7 +11,10 @@ lastUpdate = None
 #main page with statistics
 def hello():
     app.config.update(SECRET_KEY = os.urandom(24))
-    return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
+    if lastUpdate:
+        return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
+    else:
+        return render_template('error.html')
 
 
 @app.route("/alive", methods=["GET"])
