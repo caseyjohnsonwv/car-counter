@@ -10,17 +10,17 @@ lastUpdate = None
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    app.config.update(SECRET_KEY = os.urandom(24))
+    app.config.update(SECRET_KEY = os.environ.get("app_key", "app_key"))
     if lastUpdate:
         return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
     else:
-        return render_template('error.html')
+        return redirect("/alive")
 
 
 @app.route("/alive", methods=["GET"])
 #simple get request to test wi-fi connectivity
 def alive():
-    return "Success"
+    return "App is live!"
 
 
 @app.route("/reset", methods=["GET"])
