@@ -11,10 +11,7 @@ lastUpdate = None
 #main page with statistics
 def hello():
     app.config.update(SECRET_KEY = os.environ.get("app_key", "app_key"))
-    if lastUpdate:
-        return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
-    else:
-        return redirect("/alive")
+    return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
 
 
 @app.route("/alive", methods=["GET"])
