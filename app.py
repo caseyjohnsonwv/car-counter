@@ -3,18 +3,20 @@ from flask import Flask, redirect, session, request, render_template
 
 
 app = Flask(__name__)
-totalCars = 0
-lastUpdate = None
+session["TOTALCARS"] = 0
+session["LASTUPDATE"] = None
 
 
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
     app.config.update(SECRET_KEY = os.environ.get("app_key", "app_key"))
-    if lastUpdate:
-        return render_template('main.html',totalCars=totalCars,lastUpdate=lastUpdate)
+    if session.get("LASTUPDATE", None):
+        LASTUPDATE = session["LASTUPDATE"]
+        TOTALCARS = session["TOTALCARS"]
+        return render_template('main.html',totalCars=TOTALCARS,lastUpdate=LASTUPDATE)
     else:
-        return "Last update not found- have you sent any data?"
+        return render_template('error.html')
 
 
 @app.route("/alive", methods=["GET"])
@@ -26,9 +28,8 @@ def alive():
 @app.route("/reset", methods=["GET"])
 #simple get request to reset car counter
 def reset():
-    global totalCars,lastUpdate
-    totalCars = 0
-    lastUpdate = None
+    session["TOTALCARS"] = 0
+    session["LASTUPDATE"] = None
     return redirect("/")
 
 
@@ -53,9 +54,8 @@ def upload_data():
     except Exception:
         return "ERROR: Data not found."
 
-    global totalCars, lastUpdate
-    totalCars += car_count
-    lastUpdate = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
+    session["TOTALCARS"] += car_count
+    session["LASTUPDATE"] = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
 
     return "Success"
 
