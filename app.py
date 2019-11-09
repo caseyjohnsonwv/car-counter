@@ -17,12 +17,6 @@ def hello():
         return "Last update not found- have you sent any data?"
 
 
-@app.route("/alive", methods=["GET"])
-#simple get request to test wi-fi connectivity
-def alive():
-    return "App is live!"
-
-
 @app.route("/reset", methods=["GET"])
 #simple get request to reset car counter
 def reset():
