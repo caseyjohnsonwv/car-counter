@@ -52,7 +52,7 @@ def upload_data():
     except Exception:
         return "ERROR: Data not found."
 
-    session["TOTALCARS"] += car_count
+    session["TOTALCARS"] = session.get("TOTALCARS", 0) + car_count
     session["LASTUPDATE"] = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
 
     return "Success"
