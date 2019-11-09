@@ -3,8 +3,6 @@ from flask import Flask, redirect, session, request, render_template
 
 
 app = Flask(__name__)
-session["TOTALCARS"] = 0
-session["LASTUPDATE"] = None
 
 
 @app.route("/", methods=["GET"])
