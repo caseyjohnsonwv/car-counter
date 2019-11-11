@@ -20,6 +20,7 @@ def fetch():
     """.format(0)
     db.execute(query)
     res = db.fetchone()
+    _quit(conn)
     return res
 
 def generate():
@@ -35,7 +36,10 @@ def generate():
         db.execute(query)
     except Exception as ex:
         print("Failed to create dataLog table.")
-        print(ex)
+        return
+    _save(conn)
+    _quit(conn)
+    conn,db = _connect()
     query = """
     INSERT INTO dataLog VALUES (0, 0, NULL)
     """
@@ -43,20 +47,22 @@ def generate():
         db.execute(query)
     except Exception as ex:
         print("Failed to insert first row into dataLog table.")
-        print(ex)
+        return
     _save(conn)
+    _quit(conn)
 
 def reset():
     conn,db = _connect()
     query = """
-    DELETE FROM dataLog *
-    """
+    UPDATE dataLog SET carCount=0, lastUpdate=NULL WHERE id={}
+    """.format(0)
     db.execute(query)
     _save(conn)
+    _quit(conn)
 
 def update(addition):
-    conn,db = _connect()
     data = fetch()
+    conn,db = _connect()
     try:
         carCount = int(data[1])
     except Exception as ex:

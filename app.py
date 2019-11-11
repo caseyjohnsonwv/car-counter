@@ -57,4 +57,5 @@ if __name__ == "__main__":
     host = os.environ.get("host","127.0.0.1")
     port = os.environ.get("port", "5000")
     db.generate()
+    print(db.view())
     app.run(host,port)
