@@ -2,51 +2,80 @@ import psycopg2 as DBLIB
 import os, time
 
 
-class db:
-    def __init__(self):
-        self.conn = None
-        self.db = None
+def _connect():
+    conn = DBLIB.connect(os.environ['DATABASE_URL'])
+    db = conn.cursor()
+    return conn,db
 
-    def _connect(self):
-        self.conn = DBLIB.connect(os.environ['db_url'])
-        self.db = conn.cursor()
+def _save(conn):
+    conn.commit()
 
-    def _save(self):
-        self.conn.commit()
-        self.conn.close()
-        self.conn = None
-        self.db = None
+def _quit(conn):
+    conn.close()
 
-    def _generate(self):
-        self._connect()
-        query="""
-        CREATE TABLE dataLog (
-            id INTEGER NOT NULL PRIMARY KEY,
-            carCount INTEGER,
-            lastUpdate VARCHAR(50),
-        )
-        """
-        self.execute(query)
-        self._save()
+def fetch():
+    conn,db = _connect()
+    query="""
+    SELECT * FROM dataLog WHERE id={}
+    """.format(0)
+    db.execute(query)
+    res = db.fetchone()
+    return res
 
-    def execute(self, query):
-        self._connect()
-        self.db.execute(query)
-        self._save()
+def generate():
+    conn,db = _connect()
+    query="""
+    CREATE TABLE dataLog (
+        id INTEGER NOT NULL PRIMARY KEY,
+        carCount INTEGER,
+        lastUpdate VARCHAR(50)
+    )
+    """
+    try:
+        db.execute(query)
+    except Exception as ex:
+        print("Failed to create dataLog table.")
+        print(ex)
+    query = """
+    INSERT INTO dataLog VALUES (0, 0, NULL)
+    """
+    try:
+        db.execute(query)
+    except Exception as ex:
+        print("Failed to insert first row into dataLog table.")
+        print(ex)
+    _save(conn)
 
-    def fetch(self):
-        self._connect()
-        query = """
-        SELECT * FROM dataLog
-        """
-        self.execute(query)
-        res = self.db.fetchone()
-        self._save()
-        return res
+def reset():
+    conn,db = _connect()
+    query = """
+    DELETE FROM dataLog *
+    """
+    db.execute(query)
+    _save(conn)
 
-    def log(self, carCount):
-        timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
-        query="""
-        UPDATE dataLog SET carCount={}, lastUpdate={} WHERE id={}
-        """.format(carCount, timeNow, 0)
-        self.execute(query)
+def update(addition):
+    conn,db = _connect()
+    data = fetch()
+    try:
+        carCount = int(data[1])
+    except Exception as ex:
+        print(ex)
+        carCount = 0
+    carCount += addition
+    timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
+    query = """
+    UPDATE dataLog SET carCount={}, lastUpdate='{}' WHERE id={}
+    """.format(carCount, timeNow, 0)
+    db.execute(query)
+    _save(conn)
+    _quit(conn)
+
+def view():
+    conn,db = _connect()
+    query = """
+    SELECT * FROM dataLog
+    """
+    db.execute(query)
+    res = db.fetchall()
+    return res
