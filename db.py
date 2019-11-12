@@ -22,7 +22,7 @@ def drop_all():
     _save(conn)
     _quit(conn)
 
-def fetch(id=0):
+def fetch(id):
     conn,db = _connect()
     query="""
     SELECT * FROM dataLog WHERE id={}
@@ -38,6 +38,7 @@ def generate():
     CREATE TABLE dataLog (
         id INTEGER NOT NULL PRIMARY KEY,
         carCount INTEGER,
+        totalCount INTEGER,
         lastUpdate VARCHAR(50)
     )
     """
@@ -50,7 +51,7 @@ def generate():
     _quit(conn)
     conn,db = _connect()
     query = """
-    INSERT INTO dataLog VALUES (0, 0, NULL), (1, 0, NULL)
+    INSERT INTO dataLog VALUES (0, 0, 0, NULL)
     """
     try:
         db.execute(query)
@@ -60,36 +61,30 @@ def generate():
     _save(conn)
     _quit(conn)
 
-def reset(id=0):
+def reset(id):
     conn,db = _connect()
     query = """
-    UPDATE dataLog SET carCount=0, lastUpdate=NULL WHERE id={}
+    UPDATE dataLog SET carCount=0, totalCount=0, lastUpdate=NULL WHERE id={}
     """.format(id)
     db.execute(query)
     _save(conn)
     _quit(conn)
 
-def update(addition):
+def update(carCount, id):
     data = fetch(0)
     conn,db = _connect()
 
     #update id=0, total reading
     try:
-        carCount = int(data[1])
+        totalCount = int(data[2])
     except Exception as ex:
         print(ex)
-        carCount = 0
-    carCount += addition
+        totalCount = 0
+    totalCount += carCount
     timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
     query = """
-    UPDATE dataLog SET carCount={}, lastUpdate='{}' WHERE id={}
-    """.format(carCount, timeNow, 0)
-    db.execute(query)
-
-    #update id=1, last reading
-    query = """
-    UPDATE datalog SET carCount={}, lastUpdate='{}' WHERE id={}
-    """.format(addition, timeNow, 1)
+    UPDATE dataLog SET carCount={}, totalCount={}, lastUpdate='{}' WHERE id={}
+    """.format(carCount, totalCount, timeNow, id)
     db.execute(query)
 
     _save(conn)

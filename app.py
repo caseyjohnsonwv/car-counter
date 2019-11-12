@@ -13,8 +13,8 @@ app.config.update(
 def hello():
     data = db.fetch(0)
     if data:
-        id, TOTALCARS, LASTUPDATE = data
-        return render_template('main.html',totalCars=TOTALCARS,lastUpdate=LASTUPDATE)
+        id, carCount, totalCount, lastUpdate = data
+        return render_template('main.html',totalCars=totalCount,lastUpdate=lastUpdate)
     else:
         return render_template('error.html')
 
@@ -23,7 +23,6 @@ def hello():
 #simple get request to reset car counter
 def reset():
     db.reset(0)
-    db.reset(1)
     return redirect("/")
 
 
@@ -48,7 +47,7 @@ def upload_data():
     except Exception:
         return "ERROR: Data not found."
 
-    db.update(car_count)
+    db.update(car_count, 0)
 
     return "Success"
 
@@ -56,6 +55,7 @@ def upload_data():
 if __name__ == "__main__":
     host = os.environ.get("host","127.0.0.1")
     port = os.environ.get("port", "5000")
+    #db.drop_all()
     db.generate()
     print(db.view())
     app.run(host,port)
