@@ -13,11 +13,20 @@ def _save(conn):
 def _quit(conn):
     conn.close()
 
-def fetch():
+def drop_all():
+    conn,db = _connect()
+    query = """
+    DROP TABLE dataLog
+    """
+    db.execute(query)
+    _save(conn)
+    _quit(conn)
+
+def fetch(id=0):
     conn,db = _connect()
     query="""
     SELECT * FROM dataLog WHERE id={}
-    """.format(0)
+    """.format(id)
     db.execute(query)
     res = db.fetchone()
     _quit(conn)
@@ -41,28 +50,30 @@ def generate():
     _quit(conn)
     conn,db = _connect()
     query = """
-    INSERT INTO dataLog VALUES (0, 0, NULL)
+    INSERT INTO dataLog VALUES (0, 0, NULL), (1, 0, NULL)
     """
     try:
         db.execute(query)
     except Exception as ex:
-        print("Failed to insert first row into dataLog table.")
+        print("Failed to insert first rows into dataLog table.")
         return
     _save(conn)
     _quit(conn)
 
-def reset():
+def reset(id=0):
     conn,db = _connect()
     query = """
     UPDATE dataLog SET carCount=0, lastUpdate=NULL WHERE id={}
-    """.format(0)
+    """.format(id)
     db.execute(query)
     _save(conn)
     _quit(conn)
 
 def update(addition):
-    data = fetch()
+    data = fetch(0)
     conn,db = _connect()
+
+    #update id=0, total reading
     try:
         carCount = int(data[1])
     except Exception as ex:
@@ -74,6 +85,13 @@ def update(addition):
     UPDATE dataLog SET carCount={}, lastUpdate='{}' WHERE id={}
     """.format(carCount, timeNow, 0)
     db.execute(query)
+
+    #update id=1, last reading
+    query = """
+    UPDATE datalog SET carCount={}, lastUpdate='{}' WHERE id={}
+    """.format(addition, timeNow, 1)
+    db.execute(query)
+
     _save(conn)
     _quit(conn)
 

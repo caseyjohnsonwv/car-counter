@@ -11,7 +11,7 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    data = db.fetch()
+    data = db.fetch(0)
     if data:
         id, TOTALCARS, LASTUPDATE = data
         return render_template('main.html',totalCars=TOTALCARS,lastUpdate=LASTUPDATE)
@@ -22,7 +22,8 @@ def hello():
 @app.route("/reset", methods=["GET"])
 #simple get request to reset car counter
 def reset():
-    db.reset()
+    db.reset(0)
+    db.reset(1)
     return redirect("/")
 
 
@@ -47,8 +48,7 @@ def upload_data():
     except Exception:
         return "ERROR: Data not found."
 
-    TOTALCARS = session.get("TOTALCARS", 0) + car_count
-    db.update(TOTALCARS)
+    db.update(car_count)
 
     return "Success"
 
