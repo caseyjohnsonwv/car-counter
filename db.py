@@ -16,17 +16,17 @@ def _quit(conn):
 def drop_all():
     conn,db = _connect()
     query = """
-    DROP TABLE dataLog
+    DROP TABLE today
     """
     db.execute(query)
     _save(conn)
     _quit(conn)
 
-def fetch(id):
+def fetchToday():
     conn,db = _connect()
     query="""
-    SELECT * FROM dataLog WHERE id={}
-    """.format(id)
+    SELECT * FROM today WHERE id=0
+    """
     db.execute(query)
     res = db.fetchone()
     _quit(conn)
@@ -35,9 +35,8 @@ def fetch(id):
 def generate():
     conn,db = _connect()
     query="""
-    CREATE TABLE dataLog (
+    CREATE TABLE today (
         id INTEGER NOT NULL PRIMARY KEY,
-        carCount INTEGER,
         totalCount INTEGER,
         lastUpdate VARCHAR(50)
     )
@@ -45,56 +44,56 @@ def generate():
     try:
         db.execute(query)
     except Exception as ex:
-        print("Failed to create dataLog table.")
+        print("Failed to create today table.")
         return
     _save(conn)
     _quit(conn)
     conn,db = _connect()
     query = """
-    INSERT INTO dataLog VALUES (0, 0, 0, NULL)
+    INSERT INTO today VALUES (0, 0, NULL)
     """
     try:
         db.execute(query)
     except Exception as ex:
-        print("Failed to insert first rows into dataLog table.")
+        print("Failed to insert first rows into today table.")
         return
     _save(conn)
     _quit(conn)
 
-def reset(id):
+def resetToday():
     conn,db = _connect()
     query = """
-    UPDATE dataLog SET carCount=0, totalCount=0, lastUpdate=NULL WHERE id={}
-    """.format(id)
+    UPDATE today SET totalCount=0, lastUpdate=NULL WHERE id=0
+    """
     db.execute(query)
     _save(conn)
     _quit(conn)
 
-def update(carCount, id):
-    data = fetch(0)
+def updateToday(carCount):
+    data = fetchToday()
     conn,db = _connect()
 
-    #update id=0, total reading
     try:
-        totalCount = int(data[2])
+        id, totalCount, lastUpdate = data
+        totalCount = int(totalCount)
     except Exception as ex:
         print(ex)
         totalCount = 0
     totalCount += carCount
     timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
     query = """
-    UPDATE dataLog SET carCount={}, totalCount={}, lastUpdate='{}' WHERE id={}
-    """.format(carCount, totalCount, timeNow, id)
+    UPDATE today SET totalCount={}, lastUpdate='{}' WHERE id={}
+    """.format(totalCount, timeNow, id)
     db.execute(query)
 
     _save(conn)
     _quit(conn)
 
-def view():
+def viewToday():
     conn,db = _connect()
     query = """
-    SELECT * FROM dataLog
+    SELECT * FROM today
     """
     db.execute(query)
-    res = db.fetchall()
+    res = db.fetchone()
     return res

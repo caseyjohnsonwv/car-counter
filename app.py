@@ -11,18 +11,18 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    data = db.fetch(0)
+    data = db.fetchToday()
     if data:
-        id, carCount, totalCount, lastUpdate = data
+        id, totalCount, lastUpdate = data
         return render_template('main.html',totalCars=totalCount,lastUpdate=lastUpdate)
     else:
         return render_template('error.html')
 
 
-@app.route("/reset", methods=["GET"])
+@app.route("/reset-today", methods=["GET"])
 #simple get request to reset car counter
-def reset():
-    db.reset(0)
+def resetToday():
+    db.resetToday()
     return redirect("/")
 
 
@@ -47,7 +47,7 @@ def upload_data():
     except Exception:
         return "ERROR: Data not found."
 
-    db.update(car_count, 0)
+    db.updateToday(car_count)
 
     return "Success"
 
@@ -57,5 +57,5 @@ if __name__ == "__main__":
     port = os.environ.get("port", "5000")
     #db.drop_all()
     db.generate()
-    print(db.view())
+    print(db.viewToday())
     app.run(host,port)
