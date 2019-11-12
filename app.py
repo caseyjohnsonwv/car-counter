@@ -58,4 +58,5 @@ if __name__ == "__main__":
     #db.drop_all()
     db.generate()
     print(db.viewToday())
+    print(db.viewHistory())
     app.run(host,port)
