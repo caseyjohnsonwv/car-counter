@@ -88,7 +88,6 @@ def generate():
         _save(conn)
     except Exception as ex:
         print("Failed to insert dummy rows into history table.")
-    _save(conn)
     _quit(conn)
 
 def resetToday():
@@ -124,6 +123,21 @@ def updateToday(carCount):
     UPDATE today SET totalCount={}, lastUpdate='{}' WHERE id={}
     """.format(totalCount, timeNow, id)
     db.execute(query)
+    _save(conn)
+    _quit(conn)
+
+def updateHistory():
+    data = fetchToday()
+    conn,db = _connect()
+    try:
+        id, totalCount, lastUpdate = data
+        totalCount = int(totalCount)
+    except Exception as ex:
+        print(ex)
+        totalCount = 0
+    #TODO:
+    #shift all values down 1 id in history table
+    #update id=0 with new data
     _save(conn)
     _quit(conn)
 
