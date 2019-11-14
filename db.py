@@ -32,33 +32,13 @@ def drop_all():
     _save(conn)
     _quit(conn)
 
-def fetchToday():
-    conn,db = _connect()
-    query="""
-    SELECT * FROM today WHERE id=0
-    """
-    db.execute(query)
-    res = db.fetchone()
-    _quit(conn)
-    return res
-
-def fetchHistory():
-    conn,db = _connect()
-    query = """
-    SELECT * FROM history
-    """
-    db.execute(query)
-    res = db.fetchall()
-    _quit(conn)
-    return res
-
 def generate():
     #create tables
     conn,db = _connect()
     query="""
     CREATE TABLE today (
         id INTEGER NOT NULL PRIMARY KEY,
-        totalCount INTEGER,
+        carCount INTEGER,
         lastUpdate VARCHAR(50)
     )
     """
@@ -79,20 +59,12 @@ def generate():
     except Exception as ex:
         print("Failed to create history table.")
     _save(conn)
-    #upload initial data
-    conn,db = _connect()
-    query = """
-    INSERT INTO today VALUES (0, 0, NULL)
-    """
-    try:
-        db.execute(query)
-        _save(conn)
-    except Exception as ex:
-        print("Failed to insert first row into today table.")
+    #upload initial history data
     query = "INSERT INTO history VALUES "
     for k in range(14):
         query += "({},0),".format(k)
     query = query[:-1]
+    conn,db = _connect()
     try:
         db.execute(query)
         _save(conn)
@@ -103,7 +75,7 @@ def generate():
 def resetToday():
     conn,db = _connect()
     query = """
-    UPDATE today SET totalCount=0, lastUpdate=NULL WHERE id=0
+    DELETE FROM today
     """
     db.execute(query)
     _save(conn)
@@ -119,32 +91,31 @@ def resetHistory():
     _quit(conn)
 
 def updateToday(carCount):
-    data = fetchToday()
     conn,db = _connect()
-    try:
-        id, totalCount, lastUpdate = data
-        totalCount = int(totalCount)
-    except Exception as ex:
-        print(ex)
-        totalCount = 0
-    timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
-    totalCount += carCount
     query = """
-    UPDATE today SET totalCount={}, lastUpdate='{}' WHERE id={}
-    """.format(totalCount, timeNow, id)
+    SELECT id FROM today
+    """
+    db.execute(query)
+    nextId = len(db.fetchall())
+    timeNow = time.strftime("%H:%M:%S - %Y-%m-%d",time.gmtime())
+    query = """
+    INSERT INTO today VALUES ({}, {}, '{}')
+    """.format(nextId, carCount, timeNow)
     db.execute(query)
     _save(conn)
     _quit(conn)
 
 def updateHistory():
-    data = fetchToday()
+    query = """
+    SELECT carCount FROM today
+    """
     conn,db = _connect()
-    try:
-        id, totalCount, lastUpdate = data
-        totalCount = int(totalCount)
-    except Exception as ex:
-        print(ex)
-        totalCount = 0
+    db.execute(query)
+    totalCount = 0
+    res = db.fetchall()
+    for row in res:
+        carCount = row[0]
+        totalCount += int(carCount)
     query = """
     SELECT * FROM history
     """
@@ -169,7 +140,7 @@ def viewToday():
     SELECT * FROM today
     """
     db.execute(query)
-    res = db.fetchone()
+    res = db.fetchall()
     return res
 
 def viewHistory():

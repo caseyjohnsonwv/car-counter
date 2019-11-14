@@ -11,13 +11,9 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    data = db.fetchToday()
-    historyList = [v for (k,v) in db.fetchHistory()]
-    if data:
-        id, totalCount, lastUpdate = data
-        return render_template('main.html',totalCars=totalCount,lastUpdate=lastUpdate,historyList=historyList)
-    else:
-        return render_template('error.html')
+    print(db.viewToday())
+    print(db.viewHistory())
+    return render_template('main.html')
 
 
 @app.route("/reset-today", methods=["GET"])
@@ -73,7 +69,7 @@ def upload_history():
 
     if upload_key != request_key:
         return "ERROR: Data mismatch."
-        
+
     db.updateHistory()
     db.resetToday()
     return "Success"
