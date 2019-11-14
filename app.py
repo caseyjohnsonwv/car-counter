@@ -11,8 +11,6 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    print(db.viewToday())
-    print(db.viewHistory())
     return render_template('main.html')
 
 
