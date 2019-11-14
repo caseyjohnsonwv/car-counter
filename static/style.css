@@ -1,0 +1,32 @@
+body {
+  font-family: 'Helvetica', 'sans-serif';
+  color: #102542;
+  background-color: #CDD7D6;
+}
+
+h1 {
+  font-size: 3em;
+}
+
+.title {
+  text-align: center;
+}
+
+.contentWrapper {
+  margin: 0 auto;
+  width: 60%;
+}
+
+@media (max-width: 700px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  .contentWrapper {
+      width: 90%;
+  }
+}
+
+.todayChart {
+  max-width: 100%;
+}
