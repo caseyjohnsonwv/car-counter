@@ -11,7 +11,7 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    return render_template('main.html')
+    return render_template('index.html')
 
 
 @app.route("/reset-today", methods=["GET"])
