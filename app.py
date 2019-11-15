@@ -11,7 +11,13 @@ app.config.update(
 @app.route("/", methods=["GET"])
 #main page with statistics
 def hello():
-    return render_template('index.html')
+    today = db.fetchToday()
+    todayData, todayLabels = [], []
+    for d,l in today:
+        todayData.append(d)
+        todayLabels.append(l.split('-',1)[0].strip())
+    data = {'todayData':todayData,'todayLabels':todayLabels}
+    return render_template('index.html', data=data)
 
 
 @app.route("/reset-today", methods=["GET"])

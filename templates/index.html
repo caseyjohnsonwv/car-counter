@@ -5,6 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+    <script type="text/javascript">
+      var todayData = {{ data.todayData|tojson }}
+      var todayLabels = {{ data.todayLabels|tojson }}
+    </script>
+    <script type="text/javascript" src="../static/appcharts.js"></script>
     <title>Car Counter</title>
   </head>
 
@@ -17,10 +24,5 @@
     </div>
 
   </body>
-
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dotenv@8.2.0/lib/main.min.js"></script>
-  <script src="../static/appcharts.js"></script>
 
 </html>

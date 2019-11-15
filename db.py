@@ -32,6 +32,26 @@ def drop_all():
     _save(conn)
     _quit(conn)
 
+def fetchToday():
+    conn,db = _connect()
+    query = """
+    SELECT carCount, lastUpdate FROM today
+    """
+    db.execute(query)
+    res = db.fetchall()
+    _quit(conn)
+    return res
+
+def fetchHistory():
+    conn,db = _connect()
+    query = """
+    SELECT totalCount FROM history
+    """
+    db.execute(query)
+    res = db.fetchall()
+    _quit(conn)
+    return res
+
 def generate():
     #create tables
     conn,db = _connect()
