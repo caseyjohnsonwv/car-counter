@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+    <script type="text/javascript">
+      var todayData = {{ data.todayData|tojson }}
+      var todayLabels = {{ data.todayLabels|tojson }}
+    </script>
+    <script type="text/javascript" src="../static/appcharts.js"></script>
+    <title>Car Counter</title>
+  </head>
+
+  <body>
+    <h1 class="title">Car Counter</h1>
+    <div class="contentWrapper">
+      <div class="todayChart">
+        <canvas id="todayChart"></canvas>
+      </div>
+    </div>
+
+  </body>
+
+</html>
