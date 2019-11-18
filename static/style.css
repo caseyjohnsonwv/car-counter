@@ -15,6 +15,17 @@ h1 {
 .contentWrapper {
   margin: 0 auto;
   width: 60%;
+  text-align: center;
+}
+
+.selectionPane {
+
+}
+
+.selectionForm {
+  color: #102542;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 @media (max-width: 700px) {
@@ -27,6 +38,6 @@ h1 {
   }
 }
 
-.todayChart {
+.mainChart {
   max-width: 100%;
 }
