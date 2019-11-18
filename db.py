@@ -93,7 +93,7 @@ def resetToday():
 def resetHistory():
     conn,db = _connect()
     query = """
-    UPDATE history SET totalCount=0, lastUpdate=NULL
+    DELETE FROM history
     """
     db.execute(query)
     _save(conn)
