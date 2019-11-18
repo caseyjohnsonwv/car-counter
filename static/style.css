@@ -18,26 +18,28 @@ h1 {
   text-align: center;
 }
 
-.selectionPane {
-
-}
-
 .selectionForm {
   color: #102542;
   font-weight: bold;
   margin-top: 10px;
 }
 
+.mainChart {
+  max-width: 100%;
+  height: 400px;
+}
+
+/* for vertical phone viewing - inherits from above if not overridden */
 @media (max-width: 700px) {
   h1 {
     font-size: 2em;
   }
 
   .contentWrapper {
-      width: 90%;
+    width: 90%;
   }
-}
 
-.mainChart {
-  max-width: 100%;
+  .mainChart {
+    height: 250px !important;
+  }
 }
