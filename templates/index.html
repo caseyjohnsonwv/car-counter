@@ -10,6 +10,8 @@
     <script type="text/javascript">
       var todayData = {{ data.todayData|tojson }}
       var todayLabels = {{ data.todayLabels|tojson }}
+      var historyData = {{ data.historyData|tojson }}
+      var historyLabels = {{ data.historyLabels|tojson }}
     </script>
     <script type="text/javascript" src="../static/appcharts.js"></script>
     <title>Car Counter</title>
@@ -17,12 +19,19 @@
 
   <body>
     <h1 class="title">Car Counter</h1>
+
     <div class="contentWrapper">
-      <div class="todayChart">
-        <canvas id="todayChart"></canvas>
+      <div class="mainChart">
+        <canvas id="mainChart"></canvas>
+      </div>
+
+      <div class="selectionPane">
+        <form class="selectionForm" action="index.html" method="get">
+          <input type="radio" name="chartType" value="today">Today</input>
+          <input type="radio" name="chartType" value="history">History</input>
+        </form>
       </div>
     </div>
-
   </body>
 
 </html>

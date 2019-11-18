@@ -16,7 +16,15 @@ def hello():
     for d,l in today:
         todayData.append(d)
         todayLabels.append(l.split('-',1)[0].strip())
-    data = {'todayData':todayData,'todayLabels':todayLabels}
+    history = db.fetchHistory()
+    historyData, historyLabels = [], []
+    for d,l in history:
+        historyData.append(d)
+        historyLabels.append(l.split('-',1)[1].strip())
+    data = {
+    'todayData':todayData,'todayLabels':todayLabels,
+    'historyData':historyData,'historyLabels':historyLabels
+    }
     return render_template('index.html', data=data)
 
 

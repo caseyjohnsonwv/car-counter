@@ -45,7 +45,7 @@ def fetchToday():
 def fetchHistory():
     conn,db = _connect()
     query = """
-    SELECT totalCount FROM history
+    SELECT totalCount, lastUpdate FROM history
     """
     db.execute(query)
     res = db.fetchall()
@@ -70,7 +70,8 @@ def generate():
     query = """
     CREATE TABLE history (
         id INTEGER NOT NULL PRIMARY KEY,
-        totalCount INTEGER
+        totalCount INTEGER,
+        lastUpdate VARCHAR(50)
     )
     """
     try:
@@ -78,18 +79,6 @@ def generate():
         _save(conn)
     except Exception as ex:
         print("Failed to create history table.")
-    _save(conn)
-    #upload initial history data
-    query = "INSERT INTO history VALUES "
-    for k in range(14):
-        query += "({},0),".format(k)
-    query = query[:-1]
-    conn,db = _connect()
-    try:
-        db.execute(query)
-        _save(conn)
-    except Exception as ex:
-        print("Failed to insert dummy rows into history table.")
     _quit(conn)
 
 def resetToday():
@@ -104,7 +93,7 @@ def resetToday():
 def resetHistory():
     conn,db = _connect()
     query = """
-    UPDATE history SET totalCount=0
+    UPDATE history SET totalCount=0, lastUpdate=NULL
     """
     db.execute(query)
     _save(conn)
@@ -127,17 +116,19 @@ def updateToday(carCount):
 
 def updateHistory():
     query = """
-    SELECT carCount FROM today
+    SELECT carCount, lastUpdate FROM today
     """
     conn,db = _connect()
     db.execute(query)
     totalCount = 0
+    lastUpdate = None
     res = db.fetchall()
     for row in res:
         carCount = row[0]
         totalCount += int(carCount)
+    lastUpdate = res[-1][1]
     query = """
-    SELECT * FROM history
+    SELECT totalCount, lastUpdate FROM history
     """
     db.execute(query)
     res = db.fetchall()
@@ -145,10 +136,11 @@ def updateHistory():
     DELETE FROM history *
     """
     db.execute(query)
-    query = "INSERT INTO history VALUES (0, {}),".format(totalCount)
-    for k in range(0,13):
-        ct = res[k][1]
-        query += "({},{}),".format(k+1,ct)
+    query = "INSERT INTO history VALUES (0, {}, '{}'),".format(totalCount, lastUpdate)
+    for k in range(len(res)):
+        ct = res[k][0]
+        up = res[k][1]
+        query += "({},{},'{}'),".format(k+1, ct, up)
     query = query[:-1]
     db.execute(query)
     _save(conn)
